@@ -1,0 +1,19 @@
+{
+  "name": "festive-clothing-supabase-rpc",
+  "version": "1.0.0",
+  "description": "Small JavaScript app for Supabase RPC calls",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "check-availability": "node src/index.js check-availability",
+    "create-booking": "node src/index.js create-booking",
+    "list-clothes": "node src/index.js list-clothes"
+  },
+  "keywords": ["supabase", "rpc", "postgresql"],
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "dotenv": "^16.4.7"
+  }
+}
