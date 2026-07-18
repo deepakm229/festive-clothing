@@ -1,0 +1,27 @@
+import type { NextConfig } from "next";
+import path from "path";
+
+const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+  : undefined;
+
+const nextConfig: NextConfig = {
+  outputFileTracingRoot: path.join(__dirname),
+  images: {
+    remotePatterns: [
+      ...(supabaseHost
+        ? [
+            {
+              protocol: "https" as const,
+              hostname: supabaseHost,
+              pathname: "/storage/v1/object/public/**",
+            },
+          ]
+        : []),
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "res.cloudinary.com" },
+    ],
+  },
+};
+
+export default nextConfig;
