@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
-import path from "path";
+// import path from "path";
 
 const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
   ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
   : undefined;
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: path.join(__dirname),
+  // outputFileTracingRoot: path.join(__dirname),
   images: {
     remotePatterns: [
       ...(supabaseHost
