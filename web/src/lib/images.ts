@@ -1,10 +1,8 @@
-import { SITE_IMAGES } from "./site-images";
+import { getStoragePublicUrl } from "./storage";
 
-export const PLACEHOLDER_IMAGE = SITE_IMAGES.placeholder;
+export const PLACEHOLDER_IMAGE = getStoragePublicUrl("site/placeholder.jpg");
 
 const allowedHosts = new Set([
-  "images.unsplash.com",
-  "res.cloudinary.com",
   ...(process.env.NEXT_PUBLIC_SUPABASE_URL
     ? [new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname]
     : []),

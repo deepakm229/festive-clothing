@@ -25,7 +25,6 @@ Local code (web/) → GitHub → Vercel build & host → Supabase API → Postgr
 ### Already Implemented in `web/`
 
 - **Server client:** `web/src/lib/supabase/server.ts`
-- **Admin/service-role client:** `web/src/lib/supabase/admin.ts`
 - **Session/auth proxy:** `web/src/proxy.ts` + `web/src/lib/supabase/middleware.ts`
 - **Data fetching:** `web/src/lib/data/clothes.ts`, `web/src/actions/booking.ts`
 - **Vercel config:** `web/vercel.json`
@@ -44,7 +43,6 @@ Local code (web/) → GitHub → Vercel build & host → Supabase API → Postgr
 3. Note credentials from **Project Settings → API**:
    - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
    - **anon / publishable key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - **service_role key** → `SUPABASE_SERVICE_ROLE_KEY` (server-only, never in browser)
 
 ### 1.2 Run SQL migrations (in order)
 
@@ -52,6 +50,7 @@ Open **Supabase Dashboard → SQL Editor** and execute:
 
 1. `sql/rpc_functions.sql` — creates `clothes` and `bookings` tables, sample data, `check_availability()` and `create_booking()` RPCs, and public read RLS on active clothes.
 2. `sql/storage_and_admin.sql` — creates public `clothes-images` storage bucket and admin RLS policies.
+3. `sql/site_assets.sql` — site image metadata table + anon upload policies for `clothes-images/site/` (for `npm run migrate:site-images`).
 
 Verify in **Table Editor** that `clothes` has rows and RPC functions appear under **Database → Functions**.
 
@@ -88,7 +87,6 @@ Fill in `web/.env.local` (gitignored):
 |----------|-------|---------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Public (browser + server) | All Supabase clients, `next.config.ts` image domains |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public (browser + server) | All Supabase clients |
-| `SUPABASE_SERVICE_ROLE_KEY` | **Server-only secret** | Admin CRUD + image uploads via `web/src/lib/supabase/admin.ts` |
 
 **Naming gotcha:** The root demo (`.env.example`) uses `SUPABASE_URL` / `SUPABASE_ANON_KEY` without the `NEXT_PUBLIC_` prefix. The web app requires the `NEXT_PUBLIC_` prefix — do not copy root env vars verbatim.
 
@@ -108,8 +106,8 @@ Visit `http://localhost:3000/clothes` — you should see outfits from Supabase. 
 // Server Components / Server Actions (web/src/lib/supabase/server.ts)
 createServerClient(NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, { cookies })
 
-// Admin writes (web/src/lib/supabase/admin.ts)
-createClient(NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+// Admin writes (web/src/actions/admin.ts) — authenticated session + RLS
+createServerClient(...) after admin login
 
 // Public data (web/src/lib/data/clothes.ts)
 supabase.from("clothes").select("*").eq("active", true)
@@ -119,7 +117,7 @@ supabase.rpc("check_availability", { ... })
 supabase.rpc("create_booking", { ... })
 ```
 
-If `SUPABASE_SERVICE_ROLE_KEY` is omitted, admin actions fall back to the logged-in session + RLS policies (see `getWritableClient()` in `web/src/actions/admin.ts`). For reliable admin image uploads, set the service role key in production.
+Admin CRUD and image uploads use the logged-in admin session with RLS policies from `sql/storage_and_admin.sql`.
 
 ### 2.3 Build-time requirement
 
@@ -169,7 +167,6 @@ In **Project Settings → Environment Variables**, add for **Production**, **Pre
 |------|--------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API → URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → API → anon/publishable key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → API → service_role key (mark as sensitive) |
 
 These mirror `web/.env.local.example`. Vercel injects them into the build and serverless functions automatically — no code changes needed.
 
@@ -215,8 +212,7 @@ Every push to `main` triggers automatic redeployment. Optional: add a custom dom
 
 ## Security Checklist
 
-- Never commit `.env`, `.env.local`, or service role keys to GitHub.
-- `SUPABASE_SERVICE_ROLE_KEY` must only exist in Vercel env vars and local `.env.local` — it bypasses RLS.
+- Never commit `.env` or `.env.local` to GitHub.
 - `NEXT_PUBLIC_*` keys are safe for the browser; RLS policies in SQL restrict what anon users can do.
 - Rotate keys in Supabase if they were ever exposed in a commit.
 

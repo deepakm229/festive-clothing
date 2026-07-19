@@ -1,6 +1,5 @@
 "use server";
 
-import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { Booking, Cloth } from "@/lib/types";
 import { revalidatePath } from "next/cache";
@@ -26,18 +25,6 @@ async function requireAdmin() {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
   return user;
-}
-
-async function getWritableClient() {
-  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return createAdminClient();
-  }
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
-  return supabase;
 }
 
 export async function loginAction(
@@ -66,8 +53,8 @@ export async function logoutAction() {
 
 export async function getAdminClothById(id: number): Promise<Cloth | null> {
   await requireAdmin();
-  const client = await getWritableClient();
-  const { data, error } = await client
+  const supabase = await createClient();
+  const { data, error } = await supabase
     .from("clothes")
     .select("*")
     .eq("id", id)
@@ -79,8 +66,8 @@ export async function getAdminClothById(id: number): Promise<Cloth | null> {
 
 export async function getAdminClothes(): Promise<Cloth[]> {
   await requireAdmin();
-  const client = await getWritableClient();
-  const { data, error } = await client
+  const supabase = await createClient();
+  const { data, error } = await supabase
     .from("clothes")
     .select("*")
     .order("created_at", { ascending: false });
@@ -91,8 +78,8 @@ export async function getAdminClothes(): Promise<Cloth[]> {
 
 export async function getAdminBookings(): Promise<Booking[]> {
   await requireAdmin();
-  const client = await getWritableClient();
-  const { data, error } = await client
+  const supabase = await createClient();
+  const { data, error } = await supabase
     .from("bookings")
     .select("*, clothes(id, name, category, festival)")
     .order("created_at", { ascending: false });
@@ -126,16 +113,16 @@ export async function saveClothAction(
     };
   }
 
-  const client = await getWritableClient();
+  const supabase = await createClient();
 
   if (id) {
-    const { error } = await client
+    const { error } = await supabase
       .from("clothes")
       .update(parsed.data)
       .eq("id", id);
     if (error) return { success: false, error: error.message };
   } else {
-    const { error } = await client.from("clothes").insert(parsed.data);
+    const { error } = await supabase.from("clothes").insert(parsed.data);
     if (error) return { success: false, error: error.message };
   }
 
@@ -149,8 +136,8 @@ export async function deleteClothAction(
   id: number,
 ): Promise<{ success: boolean; error?: string }> {
   await requireAdmin();
-  const client = await getWritableClient();
-  const { error } = await client.from("clothes").delete().eq("id", id);
+  const supabase = await createClient();
+  const { error } = await supabase.from("clothes").delete().eq("id", id);
   if (error) return { success: false, error: error.message };
 
   revalidatePath("/");
@@ -164,8 +151,8 @@ export async function updateBookingStatusAction(
   status: string,
 ): Promise<{ success: boolean; error?: string }> {
   await requireAdmin();
-  const client = await getWritableClient();
-  const { error } = await client
+  const supabase = await createClient();
+  const { error } = await supabase
     .from("bookings")
     .update({ status })
     .eq("id", id);
@@ -186,11 +173,11 @@ export async function uploadClothImageAction(
     return { success: false, error: "No file selected" };
   }
 
-  const client = await getWritableClient();
+  const supabase = await createClient();
   const ext = file.name.split(".").pop() ?? "jpg";
   const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-  const { error: uploadError } = await client.storage
+  const { error: uploadError } = await supabase.storage
     .from("clothes-images")
     .upload(fileName, file, { upsert: false });
 
@@ -200,7 +187,7 @@ export async function uploadClothImageAction(
 
   const {
     data: { publicUrl },
-  } = client.storage.from("clothes-images").getPublicUrl(fileName);
+  } = supabase.storage.from("clothes-images").getPublicUrl(fileName);
 
   return { success: true, url: publicUrl };
 }

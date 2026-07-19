@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { SITE_IMAGES } from "@/lib/site-images";
 
-export function Hero() {
+type HeroProps = {
+  imageUrl: string;
+};
+
+export function Hero({ imageUrl }: HeroProps) {
   return (
     <section className="relative overflow-hidden bg-gray-100">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40"
         style={{
-          backgroundImage: `url('${SITE_IMAGES.hero}')`,
+          backgroundImage: `url('${imageUrl}')`,
         }}
       />
       <div className="relative mx-auto flex max-w-7xl flex-col items-start px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
