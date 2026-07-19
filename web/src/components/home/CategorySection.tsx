@@ -1,29 +1,38 @@
 import Image from "next/image";
 import Link from "next/link";
-import { SITE_IMAGES } from "@/lib/site-images";
+import type { SiteImages } from "@/lib/data/site-assets";
 
-const categories = [
-  {
-    name: "Kurta",
-    festival: "Diwali",
-    image: SITE_IMAGES.categoryKurta,
-    href: "/clothes?category=Kurta",
-  },
-  {
-    name: "Lehenga",
-    festival: "Navratri",
-    image: SITE_IMAGES.categoryLehenga,
-    href: "/clothes?category=Lehenga",
-  },
-  {
-    name: "Festive Wear",
-    festival: "All Festivals",
-    image: SITE_IMAGES.categoryFestive,
-    href: "/clothes",
-  },
-];
+type CategorySectionProps = Pick<
+  SiteImages,
+  "categoryKurta" | "categoryLehenga" | "categoryFestive"
+>;
 
-export function CategorySection() {
+export function CategorySection({
+  categoryKurta,
+  categoryLehenga,
+  categoryFestive,
+}: CategorySectionProps) {
+  const categories = [
+    {
+      name: "Kurta",
+      festival: "Diwali",
+      image: categoryKurta,
+      href: "/clothes?category=Kurta",
+    },
+    {
+      name: "Lehenga",
+      festival: "Navratri",
+      image: categoryLehenga,
+      href: "/clothes?category=Lehenga",
+    },
+    {
+      name: "Festive Wear",
+      festival: "All Festivals",
+      image: categoryFestive,
+      href: "/clothes",
+    },
+  ];
+
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="flex items-center justify-between">

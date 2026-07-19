@@ -1,13 +1,16 @@
 import Link from "next/link";
-import { SITE_IMAGES } from "@/lib/site-images";
 
-export function PromoBanner() {
+type PromoBannerProps = {
+  imageUrl: string;
+};
+
+export function PromoBanner({ imageUrl }: PromoBannerProps) {
   return (
     <section className="relative my-8 overflow-hidden">
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('${SITE_IMAGES.promo}')`,
+          backgroundImage: `url('${imageUrl}')`,
         }}
       />
       <div className="absolute inset-0 bg-black/50" />

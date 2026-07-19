@@ -4,7 +4,7 @@
 -- Storage bucket for cloth images
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('clothes-images', 'clothes-images', true)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET public = true;
 
 -- Public read access to images
 CREATE POLICY "Public can view cloth images"
