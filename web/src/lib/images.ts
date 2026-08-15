@@ -7,7 +7,6 @@ import {
 import type { SiteImages } from "./data/site-assets";
 
 export const PLACEHOLDER_IMAGE = getStoragePublicUrl("site/placeholder.jpg");
-export const PLACEHOLDER_IMAGE = getStoragePublicUrl("site/placeholder.jpg");
 
 const allowedHosts = new Set([
   ...(process.env.NEXT_PUBLIC_SUPABASE_URL
