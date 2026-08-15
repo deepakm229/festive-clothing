@@ -34,7 +34,8 @@ export default async function AdminClothesPage() {
             <thead>
               <tr className="border-b border-border text-xs uppercase tracking-wider text-muted">
                 <th className="pb-3 pr-4">Name</th>
-                <th className="pb-3 pr-4">Category</th>
+                <th className="pb-3 pr-4">Shop For</th>
+                <th className="pb-3 pr-4">Style</th>
                 <th className="pb-3 pr-4">Price</th>
                 <th className="pb-3 pr-4">Status</th>
                 <th className="pb-3">Actions</th>
@@ -44,8 +45,9 @@ export default async function AdminClothesPage() {
               {clothes.map((cloth) => (
                 <tr key={cloth.id} className="border-b border-border">
                   <td className="py-3 pr-4 font-medium">{cloth.name}</td>
+                  <td className="py-3 pr-4 text-muted">{cloth.category ?? "—"}</td>
                   <td className="py-3 pr-4 text-muted">
-                    {[cloth.festival, cloth.category].filter(Boolean).join(" · ") || "—"}
+                    {[cloth.subcategory, cloth.festival].filter(Boolean).join(" · ") || "—"}
                   </td>
                   <td className="py-3 pr-4">₹{cloth.price}</td>
                   <td className="py-3 pr-4">

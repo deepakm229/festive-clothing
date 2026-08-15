@@ -7,3 +7,10 @@ export function getStoragePublicUrl(storagePath: string): string {
   }
   return `${base}/storage/v1/object/public/${BUCKET}/${storagePath}`;
 }
+
+/** Append a version query param so browsers and next/image refetch after storage overwrites. */
+export function withCacheBuster(url: string, version?: string | null): string {
+  if (!version) return url;
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}v=${encodeURIComponent(version)}`;
+}

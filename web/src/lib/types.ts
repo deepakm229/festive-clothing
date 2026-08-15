@@ -1,7 +1,10 @@
+import type { ClothCategory } from "@/lib/constants/categories";
+
 export type Cloth = {
   id: number;
   name: string;
-  category: string | null;
+  category: ClothCategory | string | null;
+  subcategory: string | null;
   festival: string | null;
   description: string | null;
   size: string | null;

@@ -21,22 +21,22 @@ const SITE_IMAGES = [
       "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=1600&q=80",
   },
   {
-    key: "category_kurta",
-    storagePath: "site/category-kurta.jpg",
+    key: "category_men",
+    storagePath: "site/category-men.jpg",
     sourceUrl:
-      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80",
+      "https://images.unsplash.com/photo-1762709413447-15781dbc08f7?w=800&q=80",
   },
   {
-    key: "category_lehenga",
+    key: "category_women",
     storagePath: "site/category-lehenga.jpg",
     sourceUrl:
-      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=600&q=80",
+      "https://images.unsplash.com/photo-1762201698238-bf412e297016?w=800&q=80",
   },
   {
-    key: "category_festive",
+    key: "category_kids",
     storagePath: "site/category-festive.jpg",
     sourceUrl:
-      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80",
+      "https://images.unsplash.com/photo-1769773650757-0c92db57d9ca?w=800&q=80",
   },
   {
     key: "placeholder",
@@ -171,6 +171,24 @@ async function main() {
     }
 
     console.log("ok");
+
+    const { error: metaError } = await supabase.from("site_assets").upsert(
+      {
+        key: image.key,
+        storage_path: image.storagePath,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "key" },
+    );
+
+    if (metaError) {
+      console.warn(
+        `\n  Warning: could not update site_assets for ${image.key}: ${metaError.message}`,
+      );
+      console.warn(
+        "  Re-run sql/site_assets.sql in Supabase SQL Editor to refresh image cache versions.",
+      );
+    }
   }
 
   if (publicUrlBroken) {

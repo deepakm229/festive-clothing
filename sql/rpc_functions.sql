@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS clothes (
   id BIGSERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   category TEXT,
+  subcategory TEXT,
   festival TEXT,
   description TEXT,
   size TEXT,
@@ -31,10 +32,10 @@ CREATE TABLE IF NOT EXISTS bookings (
 );
 
 -- Sample data
-INSERT INTO clothes (name, category, festival, description, size, price, security_deposit, active)
+INSERT INTO clothes (name, category, subcategory, festival, description, size, price, security_deposit, active)
 VALUES
-  ('Red Silk Kurta', 'Kurta', 'Diwali', 'Traditional silk kurta with gold embroidery', 'M', 800, 500, true),
-  ('Lehenga Set', 'Lehenga', 'Navratri', 'Vibrant lehenga with matching dupatta', 'S', 1500, 1000, true)
+  ('Men Kurta Blue', 'Men', 'Kurta', 'Diwali', 'Premium cotton kurta with gold embroidery', 'XL', 999, 500, true),
+  ('Women Lehenga', 'Women', 'Lehenga', 'Wedding', 'Designer lehenga with matching dupatta', 'M', 2499, 1000, true)
 ON CONFLICT DO NOTHING;
 
 -- RPC: check if a cloth is available for a date range

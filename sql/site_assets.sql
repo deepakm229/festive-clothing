@@ -44,10 +44,15 @@ CREATE POLICY "Anon can update site assets"
 INSERT INTO site_assets (key, storage_path, alt_text) VALUES
   ('hero', 'site/hero.jpg', 'Festive clothing hero banner'),
   ('promo', 'site/promo.jpg', 'Festival season promo banner'),
-  ('category_kurta', 'site/category-kurta.jpg', 'Kurta category'),
-  ('category_lehenga', 'site/category-lehenga.jpg', 'Lehenga category'),
-  ('category_festive', 'site/category-festive.jpg', 'Festive wear category'),
+  ('category_men', 'site/category-men.jpg', 'Man in traditional sherwani'),
+  ('category_women', 'site/category-lehenga.jpg', 'Woman in ornate red lehenga'),
+  ('category_kids', 'site/category-festive.jpg', 'Kids in traditional festive wear'),
   ('placeholder', 'site/placeholder.jpg', 'Outfit placeholder')
 ON CONFLICT (key) DO UPDATE SET
   storage_path = EXCLUDED.storage_path,
-  alt_text = EXCLUDED.alt_text;
+  alt_text = EXCLUDED.alt_text,
+  updated_at = now();
+
+-- Remove legacy category keys superseded by category_men / category_women / category_kids
+DELETE FROM site_assets
+WHERE key IN ('category_kurta', 'category_lehenga', 'category_festive');

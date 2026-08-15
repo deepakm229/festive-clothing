@@ -5,10 +5,12 @@ import type { Booking, Cloth } from "@/lib/types";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { CLOTH_CATEGORIES } from "@/lib/constants/categories";
 
 const clothSchema = z.object({
   name: z.string().min(2),
-  category: z.string().optional(),
+  category: z.enum(CLOTH_CATEGORIES),
+  subcategory: z.string().min(1),
   festival: z.string().optional(),
   description: z.string().optional(),
   size: z.string().optional(),
@@ -81,7 +83,7 @@ export async function getAdminBookings(): Promise<Booking[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("bookings")
-    .select("*, clothes(id, name, category, festival)")
+    .select("*, clothes(id, name, category, subcategory, festival)")
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
@@ -96,7 +98,8 @@ export async function saveClothAction(
 
   const parsed = clothSchema.safeParse({
     name: formData.get("name"),
-    category: formData.get("category") || undefined,
+    category: formData.get("category"),
+    subcategory: formData.get("subcategory"),
     festival: formData.get("festival") || undefined,
     description: formData.get("description") || undefined,
     size: formData.get("size") || undefined,

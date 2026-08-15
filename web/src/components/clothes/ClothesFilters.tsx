@@ -2,6 +2,7 @@ import Link from "next/link";
 
 type FilterOptions = {
   categories: string[];
+  subcategories: string[];
   festivals: string[];
   sizes: string[];
 };
@@ -11,6 +12,7 @@ type Props = {
   current: {
     search?: string;
     category?: string;
+    subcategory?: string;
     festival?: string;
     size?: string;
   };
@@ -33,17 +35,35 @@ export function ClothesFilters({ options, current }: Props) {
 
       <div>
         <label className="text-xs font-medium uppercase tracking-wider text-muted">
-          Category
+          Shop For
         </label>
         <select
           name="category"
           defaultValue={current.category ?? ""}
           className="mt-1 w-full rounded-md border border-border bg-white px-3 py-2 text-sm outline-none"
         >
-          <option value="">All categories</option>
+          <option value="">All</option>
           {options.categories.map((c) => (
             <option key={c} value={c}>
               {c}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="text-xs font-medium uppercase tracking-wider text-muted">
+          Style
+        </label>
+        <select
+          name="subcategory"
+          defaultValue={current.subcategory ?? ""}
+          className="mt-1 w-full rounded-md border border-border bg-white px-3 py-2 text-sm outline-none"
+        >
+          <option value="">All styles</option>
+          {options.subcategories.map((s) => (
+            <option key={s} value={s}>
+              {s}
             </option>
           ))}
         </select>
