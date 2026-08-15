@@ -1,4 +1,4 @@
-import { Package, Smile, Truck } from "lucide-react";
+import { Package, Smile } from "lucide-react";
 
 const features = [
   {
@@ -11,17 +11,12 @@ const features = [
     title: "Happy Customers",
     description: "Trusted by hundreds of families for festive celebrations.",
   },
-  {
-    icon: Truck,
-    title: "Easy Pickup",
-    description: "Convenient pickup and return with flexible rental dates.",
-  },
 ];
 
 export function TrustBar() {
   return (
     <section className="border-y border-border bg-white">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-4xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:px-8">
         {features.map(({ icon: Icon, title, description }) => (
           <div key={title} className="flex items-start gap-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-100">

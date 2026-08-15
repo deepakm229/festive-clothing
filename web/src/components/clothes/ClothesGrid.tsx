@@ -1,7 +1,13 @@
 import type { Cloth } from "@/lib/types";
 import { ProductCard } from "./ProductCard";
 
-export function ClothesGrid({ clothes }: { clothes: Cloth[] }) {
+export function ClothesGrid({
+  clothes,
+  emphasizedText = false,
+}: {
+  clothes: Cloth[];
+  emphasizedText?: boolean;
+}) {
   if (clothes.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-border py-16 text-center">
@@ -13,7 +19,7 @@ export function ClothesGrid({ clothes }: { clothes: Cloth[] }) {
   return (
     <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
       {clothes.map((cloth) => (
-        <ProductCard key={cloth.id} cloth={cloth} />
+        <ProductCard key={cloth.id} cloth={cloth} emphasizedText={emphasizedText} />
       ))}
     </div>
   );

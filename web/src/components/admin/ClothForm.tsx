@@ -6,6 +6,10 @@ import {
   saveClothAction,
   uploadClothImageAction,
 } from "@/actions/admin";
+import {
+  CLOTH_CATEGORIES,
+  CLOTH_SUBCATEGORIES,
+} from "@/lib/constants/categories";
 import type { Cloth } from "@/lib/types";
 import { getClothImageUrl } from "@/lib/images";
 import Image from "next/image";
@@ -70,14 +74,47 @@ export function ClothForm({ cloth }: Props) {
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="text-xs font-medium uppercase tracking-wider text-muted">
-            Category
+            Shop For *
           </label>
-          <input
+          <select
             name="category"
+            required
             defaultValue={cloth?.category ?? ""}
             className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none"
-          />
+          >
+            <option value="" disabled>
+              Select audience
+            </option>
+            {CLOTH_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </div>
+        <div>
+          <label className="text-xs font-medium uppercase tracking-wider text-muted">
+            Style *
+          </label>
+          <select
+            name="subcategory"
+            required
+            defaultValue={cloth?.subcategory ?? ""}
+            className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none"
+          >
+            <option value="" disabled>
+              Select style
+            </option>
+            {CLOTH_SUBCATEGORIES.map((sub) => (
+              <option key={sub} value={sub}>
+                {sub}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="text-xs font-medium uppercase tracking-wider text-muted">
             Festival
@@ -88,9 +125,6 @@ export function ClothForm({ cloth }: Props) {
             className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none"
           />
         </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-3">
         <div>
           <label className="text-xs font-medium uppercase tracking-wider text-muted">
             Size
@@ -101,6 +135,9 @@ export function ClothForm({ cloth }: Props) {
             className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none"
           />
         </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="text-xs font-medium uppercase tracking-wider text-muted">
             Price (₹/day) *

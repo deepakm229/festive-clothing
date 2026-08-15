@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getClothImageUrl } from "@/lib/images";
+import { formatClothMeta } from "@/lib/constants/categories";
 import type { Cloth } from "@/lib/types";
 
 function formatPrice(amount: number) {
@@ -11,7 +12,13 @@ function formatPrice(amount: number) {
   }).format(amount);
 }
 
-export function ProductCard({ cloth }: { cloth: Cloth }) {
+export function ProductCard({
+  cloth,
+  emphasizedText = false,
+}: {
+  cloth: Cloth;
+  emphasizedText?: boolean;
+}) {
   const imageSrc = getClothImageUrl(cloth.image_url);
 
   return (
@@ -26,16 +33,20 @@ export function ProductCard({ cloth }: { cloth: Cloth }) {
         />
       </div>
       <div className="mt-3">
-        <h3 className="text-sm font-medium text-foreground group-hover:text-muted">
+        <h3
+          className={`font-medium text-foreground group-hover:text-muted ${
+            emphasizedText ? "text-lg" : "text-sm"
+          }`}
+        >
           {cloth.name}
         </h3>
         <div className="mt-1 flex items-center gap-2">
           <span className="text-sm font-semibold">{formatPrice(cloth.price)}</span>
           <span className="text-xs text-muted">/ day</span>
         </div>
-        {(cloth.festival || cloth.category) && (
-          <p className="mt-1 text-xs text-muted">
-            {[cloth.festival, cloth.category].filter(Boolean).join(" · ")}
+        {formatClothMeta(cloth) && (
+          <p className={`mt-1 text-muted ${emphasizedText ? "text-base" : "text-xs"}`}>
+            {formatClothMeta(cloth)}
           </p>
         )}
       </div>
