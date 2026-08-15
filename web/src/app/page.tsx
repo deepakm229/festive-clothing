@@ -7,8 +7,11 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import type { Cloth } from "@/lib/types";
 import { getFeaturedClothes } from "@/lib/data/clothes";
 import { getSiteImages } from "@/lib/data/site-assets";
+import { getSiteImages } from "@/lib/data/site-assets";
 
 export default async function HomePage() {
+  const siteImages = await getSiteImages();
+
   const siteImages = await getSiteImages();
 
   let featured: Cloth[] = [];
@@ -20,6 +23,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <Hero imageUrl={siteImages.hero} />
       <Hero imageUrl={siteImages.hero} />
       <TrustBar />
       <AudienceSection
@@ -35,6 +39,7 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <PromoBanner imageUrl={siteImages.promo} />
       <PromoBanner imageUrl={siteImages.promo} />
     </>
   );
